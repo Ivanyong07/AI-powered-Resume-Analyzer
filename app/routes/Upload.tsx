@@ -64,10 +64,16 @@ const Upload = () => {
 
         if(!feedback) return setStatusText("Nigga, this system only for displaying only hahahaha");
 
-        const feedbackText = typeof feedback.message.content
+        const feedbackText = typeof feedback.message.content === 'string' 
+            ? feedback.message.content: feedback.message.content[0].text
+
+        data.feedback = JSON.parse(feedbackText);
+        await kv.set(`resume:${uuid}`, JSON.stringify(data));
+        setStatusText('Analysis complete, redirecting...')
+        console.log(data)
     }
 
-    const handleSubmit = ( e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async ( e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget.closest('form');
         if (!form) return;
@@ -79,7 +85,7 @@ const Upload = () => {
 
         if (!file) return;
 
-        handleAnalyze({companyName, jobTitle, jobDescription, file});
+        await handleAnalyze({companyName, jobTitle, jobDescription, file});
     }
 
 
@@ -131,7 +137,4 @@ const Upload = () => {
 }
 
 export default Upload
-function async(arg0: { companyName: any; jobTitle: any; jobDescription: any; file: File | null; }) {
-    throw new Error('Function not implemented.');
-}
 
