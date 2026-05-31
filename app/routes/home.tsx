@@ -1,9 +1,21 @@
+import { useLocation, useNavigate } from "react-router";
 import type { Route } from "./+types/home";
 import Navbar from "~/components/Navbar";
 import ResumeCard from "~/components/ResumeCard";
 import { resumes } from "~/constants";
+import { usePuterStore } from "~/lib/puter";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
+    const { auth } = usePuterStore();
+    const navigate = useNavigate();
+
+    // if use try to use it will block after finish sig in it will redirect back to homw page
+    useEffect(() => {
+        if(!auth.isAuthenticated){
+            navigate('/auth?next=/');
+        }
+    }, [auth.isAuthenticated])
   return [
     { title: "VANSUME" },
     { name: "description", content: "Smart feedback for your dream job" },
